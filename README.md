@@ -1,20 +1,22 @@
-# ICP Prospect Qualifier
+# ICP Prospect Qualifier (Free - Ollama Edition)
 
-Score company domains against your Ideal Customer Profile (ICP) criteria and output a prioritized CSV ready for enrichment.
+Score company domains against your Ideal Customer Profile (ICP) criteria using a local LLM. **No API costs.**
 
 ## Quick Start
 
 ```bash
-# 1. Install dependencies
+# 1. Install Ollama
+curl -fsSL https://ollama.com/install.sh | sh
+
+# 2. Pull a model (one-time, ~4GB download)
+ollama pull llama3.1:8b
+
+# 3. Install Python dependencies
 pip install -r requirements.txt
 
-# 2. Set up your API key
-cp .env.example .env
-# Edit .env and add your ANTHROPIC_API_KEY
+# 4. Add your domains to input/domains.csv
 
-# 3. Add your domains to input/domains.csv
-
-# 4. Run the scorer
+# 5. Run the scorer
 python score_prospects.py input/domains.csv
 ```
 
@@ -36,9 +38,19 @@ python score_prospects.py input/domains.csv --min-score 80
 # Test with first 5 domains
 python score_prospects.py input/domains.csv --limit 5
 
-# Use a different model
-python score_prospects.py input/domains.csv --model claude-sonnet-4-20250514
+# Use a different model (smaller/faster)
+python score_prospects.py input/domains.csv --model mistral
 ```
+
+## Recommended Models
+
+| Model | Size | Speed | Quality |
+|-------|------|-------|---------|
+| `llama3.1:8b` | 4.7GB | Medium | Best |
+| `mistral` | 4.1GB | Fast | Good |
+| `llama3.1:70b` | 40GB | Slow | Excellent |
+
+Pull with: `ollama pull <model-name>`
 
 ## Input Format
 
@@ -88,8 +100,24 @@ Edit `icp_criteria.json` to adjust:
 
 ## Workflow
 
-1. Export a large list of domains (from a purchased list, scrape, etc.)
-2. Run through the scorer
+1. Get a large list of domains (purchased list, export, etc.)
+2. Run through the scorer: `python score_prospects.py input/domains.csv`
 3. Focus on hot_lead and warm_lead tiers
-4. Enrich with Apollo/Clearbit for contact info
+4. Enrich with Apollo for contact info + LinkedIn URLs
 5. Start outreach
+
+## Troubleshooting
+
+**"Ollama is not running"**
+```bash
+ollama serve  # Start Ollama in a terminal
+```
+
+**Model not found**
+```bash
+ollama pull llama3.1:8b
+```
+
+**Slow performance**
+- Use a smaller model: `--model mistral`
+- Limit domains for testing: `--limit 10`

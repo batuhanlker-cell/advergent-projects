@@ -1,6 +1,5 @@
 import json
-import anthropic
-from typing import Optional
+import ollama
 
 
 def load_icp_criteria(criteria_path: str = "icp_criteria.json") -> dict:
@@ -10,7 +9,7 @@ def load_icp_criteria(criteria_path: str = "icp_criteria.json") -> dict:
 
 
 def build_scoring_prompt(domain: str, criteria: dict) -> str:
-    """Build the prompt for Claude to score a company."""
+    """Build the prompt to score a company."""
 
     criteria_text = ""
     for name, config in criteria["scoring_criteria"].items():
@@ -76,22 +75,23 @@ Return ONLY valid JSON, no other text."""
 def score_company(
     domain: str,
     criteria: dict,
-    client: anthropic.Anthropic,
-    model: str = "claude-sonnet-4-20250514"
+    model: str = "llama3.1:8b"
 ) -> dict:
-    """Score a single company against ICP criteria using Claude."""
+    """Score a single company against ICP criteria using Ollama."""
 
     prompt = build_scoring_prompt(domain, criteria)
 
-    message = client.messages.create(
+    response = ollama.chat(
         model=model,
-        max_tokens=1024,
         messages=[
             {"role": "user", "content": prompt}
-        ]
+        ],
+        options={
+            "temperature": 0.3,  # Lower temperature for more consistent JSON
+        }
     )
 
-    response_text = message.content[0].text
+    response_text = response["message"]["content"]
 
     # Parse JSON response
     try:

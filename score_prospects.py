@@ -1,32 +1,53 @@
 #!/usr/bin/env python3
 """
-ICP Prospect Qualifier
+ICP Prospect Qualifier (Ollama Edition)
 
 Score a list of company domains against your Ideal Customer Profile criteria.
 Outputs a prioritized CSV ready for enrichment with Apollo or similar tools.
 
+Requires Ollama running locally: https://ollama.com
+
 Usage:
     python score_prospects.py input/domains.csv
     python score_prospects.py input/domains.csv --output results.csv
-    python score_prospects.py input/domains.csv --include-reasoning
+    python score_prospects.py input/domains.csv --model mistral
 """
 
 import argparse
-import os
+import subprocess
 import sys
 from pathlib import Path
 
-import anthropic
-from dotenv import load_dotenv
 from tqdm import tqdm
 
 from src.scorer import load_icp_criteria, score_company
 from src.csv_handler import read_domains, write_results, generate_output_filename
 
 
+def check_ollama_running() -> bool:
+    """Check if Ollama is running."""
+    try:
+        import ollama
+        ollama.list()
+        return True
+    except Exception:
+        return False
+
+
+def check_model_available(model: str) -> bool:
+    """Check if the specified model is available."""
+    try:
+        import ollama
+        models = ollama.list()
+        model_names = [m.model.split(":")[0] for m in models.models]
+        return model.split(":")[0] in model_names
+    except Exception:
+        return False
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Score company domains against ICP criteria"
+        description="Score company domains against ICP criteria using Ollama"
     )
     parser.add_argument(
         "input_file",
@@ -48,8 +69,8 @@ def main():
     )
     parser.add_argument(
         "--model", "-m",
-        default="claude-sonnet-4-20250514",
-        help="Claude model to use (default: claude-sonnet-4-20250514)"
+        default="llama3.1:8b",
+        help="Ollama model to use (default: llama3.1:8b)"
     )
     parser.add_argument(
         "--limit", "-l",
@@ -66,15 +87,25 @@ def main():
 
     args = parser.parse_args()
 
-    # Load environment variables
-    load_dotenv()
-
-    # Check for API key
-    api_key = os.getenv("ANTHROPIC_API_KEY")
-    if not api_key:
-        print("Error: ANTHROPIC_API_KEY not found in environment or .env file")
-        print("Create a .env file with: ANTHROPIC_API_KEY=your_key_here")
+    # Check Ollama is running
+    print("Checking Ollama connection...")
+    if not check_ollama_running():
+        print("Error: Ollama is not running.")
+        print("\nTo start Ollama:")
+        print("  1. Install: curl -fsSL https://ollama.com/install.sh | sh")
+        print("  2. Start: ollama serve")
+        print("  3. Pull model: ollama pull llama3.1:8b")
         sys.exit(1)
+
+    # Check model is available
+    if not check_model_available(args.model):
+        print(f"Model '{args.model}' not found. Pulling it now...")
+        try:
+            subprocess.run(["ollama", "pull", args.model], check=True)
+        except subprocess.CalledProcessError:
+            print(f"Error: Failed to pull model '{args.model}'")
+            print(f"Try manually: ollama pull {args.model}")
+            sys.exit(1)
 
     # Validate input file
     if not Path(args.input_file).exists():
@@ -90,9 +121,6 @@ def main():
         print(f"Error: Criteria file not found: {args.criteria}")
         sys.exit(1)
 
-    # Initialize Anthropic client
-    client = anthropic.Anthropic(api_key=api_key)
-
     # Read domains
     print(f"Reading domains from {args.input_file}...")
     domains = list(read_domains(args.input_file))
@@ -107,12 +135,13 @@ def main():
         sys.exit(1)
 
     # Process each domain
-    print(f"\nScoring companies against ICP criteria using {args.model}...")
+    print(f"\nScoring companies using Ollama ({args.model})...")
+    print("(This runs locally - no API costs!)\n")
     results = []
 
     for domain in tqdm(domains, desc="Scoring"):
         try:
-            result = score_company(domain, criteria, client, model=args.model)
+            result = score_company(domain, criteria, model=args.model)
             results.append(result)
         except Exception as e:
             print(f"\n  Error processing {domain}: {str(e)}")
