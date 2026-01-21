@@ -1,116 +1,135 @@
 {
-  "name": "High-Ticket B2B Lead Gen ICP",
-  "description": "B2B SaaS and high-ticket businesses needing qualified demo bookings through paid ads",
+  "name": "Advergent Lead Scoring System V2",
+  "description": "B2B companies that can benefit from paid acquisition funnels. Prioritizes signals we can reliably detect (vertical fit, sales model, traction) over hidden signals (exact pricing).",
 
   "target_verticals": [
     "B2B SaaS companies",
     "Agencies selling $10K+ engagements",
     "Consultancies with high-ticket services",
     "Coaches/programs with $5K+ offers",
-    "Service providers wanting paid acquisition channel"
+    "Service providers wanting paid acquisition channel",
+    "Vertical SaaS (niche industry software)",
+    "MarTech/RevTech tools",
+    "Professional services firms"
   ],
 
   "scoring_criteria": {
-    "offer_price": {
+    "vertical_fit": {
       "weight": 25,
-      "description": "Minimum $3K offer (ideally $5K+)",
+      "description": "Does this company fit our target verticals?",
       "scoring_guide": {
-        "10": "$10K+ offers clearly visible",
-        "8": "$5K-10K offer range",
-        "5": "$3K-5K offer range",
-        "2": "Unclear pricing but likely high-ticket",
-        "0": "Low-ticket or self-serve pricing"
+        "10": "B2B SaaS selling to businesses, Agency/Consultancy with high-ticket services, Coach/Program with premium offers",
+        "8": "Vertical SaaS (niche industry software), Professional services firm, MarTech/RevTech tools",
+        "6": "B2B but unclear offer structure, Marketplace with B2B component",
+        "4": "Mixed B2B/B2C model, B2B but very early stage",
+        "2": "Primarily B2C with some B2B, Dev tools sold to engineers (not business buyers)",
+        "0": "Pure B2C, Consumer app, E-commerce product brand, Infrastructure/developer tools only"
       }
     },
     "sales_model": {
-      "weight": 20,
-      "description": "Sells via demos/calls, not self-serve",
+      "weight": 25,
+      "description": "Do they sell via demos/calls (not self-serve)?",
       "scoring_guide": {
-        "10": "Clear 'Book a demo' or 'Schedule a call' CTA",
-        "7": "Contact sales / Get a quote model",
-        "3": "Mixed model (some self-serve, some sales)",
-        "0": "Pure self-serve / buy now button"
-      }
-    },
-    "buyer_reachability": {
-      "weight": 20,
-      "description": "Decision-maker (founder, CEO, VP) reachable on Meta or LinkedIn",
-      "scoring_guide": {
-        "10": "Clearly targets business owners/executives, active on social",
-        "7": "SMB focus, buyers likely on LinkedIn/Meta",
-        "4": "Mid-market, mixed buyer personas",
-        "0": "Enterprise/technical buyers, dev communities only"
-      }
-    },
-    "pain_point_clarity": {
-      "weight": 15,
-      "description": "Clear, emotionally-charged pain point for ad creative",
-      "scoring_guide": {
-        "10": "Obvious pain point (revenue, time, leads, growth)",
-        "7": "Clear business problem, somewhat emotional",
-        "4": "Technical problem, less emotional appeal",
-        "0": "Vague value prop, no clear pain"
+        "10": "Explicit 'Book a Demo' / 'Talk to Sales' / 'Get a Quote' as primary CTA, No visible pricing (implies custom/enterprise)",
+        "8": "Demo CTA present alongside self-serve option, 'Contact Us' for enterprise tier",
+        "6": "Hybrid model: self-serve entry + sales-assisted upsell, Free trial that leads to sales conversation",
+        "4": "Primarily self-serve with optional demo, Pricing fully visible but has 'Enterprise: Contact Us'",
+        "2": "Fully self-serve, all pricing visible, no sales involvement",
+        "0": "No clear sales process, Product-led only with no human touchpoint"
       }
     },
     "traction": {
-      "weight": 10,
-      "description": "Has clients, revenue, proof points - not pre-revenue",
+      "weight": 25,
+      "description": "Do they have proof of real business traction?",
       "scoring_guide": {
-        "10": "Clear traction signals (logos, testimonials, case studies)",
-        "7": "Some social proof visible",
-        "4": "Appears established but limited proof",
-        "0": "Looks pre-revenue or very early stage"
+        "10": "Named enterprise customers (Fortune 500, recognizable logos), Funding disclosed ($5M+), Revenue/growth metrics shared, 1000+ customers claimed",
+        "8": "Good customer logos visible, Customer testimonials with titles/companies, Case studies with results, 100+ customers or strong social proof",
+        "6": "Some testimonials present, LinkedIn shows 50+ employees, Has been in business 2+ years, Some press/media mentions",
+        "4": "Limited social proof, Small team (10-50 employees), Early but has some customers, Seed funded or bootstrapped with revenue",
+        "2": "Very early stage, Few/no testimonials, Team <10 people, Recently launched",
+        "0": "No visible traction, Looks like a landing page only, Pre-revenue/pre-launch"
       }
     },
-    "vertical_fit": {
-      "weight": 10,
-      "description": "Fits target verticals",
+    "buyer_reachability": {
+      "weight": 15,
+      "description": "Can we reach the decision-maker via Meta/LinkedIn ads?",
       "scoring_guide": {
-        "10": "Perfect fit - B2B SaaS or high-ticket service",
-        "7": "Good fit - adjacent vertical",
-        "3": "Partial fit - some relevance",
-        "0": "No fit - wrong vertical entirely"
+        "10": "Buyer is founder/CEO/business owner (very active on social), Target is marketers, sales leaders, or growth roles (native to paid channels)",
+        "8": "Buyer is VP/Director level in non-technical function (Operations, Finance, HR), SMB owners who are on Facebook/LinkedIn",
+        "6": "Buyer is mid-market executive, May use LinkedIn but less active, Mixed technical/business buyer",
+        "4": "Buyer is technical (CTO, Engineering Manager) but at business-focused company, Enterprise buyer who uses LinkedIn professionally",
+        "2": "Buyer is developer/engineer who doesn't engage with ads, Highly technical audience (DevOps, Data Engineers)",
+        "0": "Buyer is procurement/committee (enterprise RFP process), Pure developer audience, Government/institutional buyer"
+      }
+    },
+    "offer_price": {
+      "weight": 10,
+      "description": "Is this likely a high-ticket offer ($3K+)?",
+      "scoring_guide": {
+        "10": "Explicit high-ticket pricing visible ($5K+/deal or $1K+/month), 'Starting at $X,000', Enterprise-only positioning",
+        "8": "No pricing visible + demo-based sales model (strong signal of high-ticket), Custom pricing / 'Get a Quote'",
+        "7": "No pricing visible + B2B SaaS in target vertical (benefit of doubt), Agency/consultancy (typically high-ticket)",
+        "5": "Pricing visible in $500-3K range, Mid-market positioning",
+        "3": "Pricing visible in $100-500/month range, SMB-focused with lower ACVs",
+        "0": "Pricing visible <$100/month, Freemium-focused, Consumer pricing"
+      },
+      "inference_rules": {
+        "if_sales_model_gte_8": 8,
+        "if_vertical_fit_gte_8_and_sales_model_gte_6": 7
       }
     }
   },
 
   "disqualifiers": [
     {
-      "name": "enterprise_only",
-      "description": "Enterprise-only sales with 6+ month cycles, procurement, technical committees",
-      "auto_score": 0
-    },
-    {
-      "name": "b2c_low_ticket",
-      "description": "B2C or low-ticket subscriptions under $100/month",
-      "auto_score": 0
+      "name": "pure_b2c",
+      "description": "Pure B2C - Consumer product with no B2B component"
     },
     {
       "name": "toxic_reputation",
-      "description": "Toxic reputation, dark patterns, or unethical business practices",
-      "auto_score": 0
+      "description": "Toxic reputation - Significant negative reviews indicating scam/fraud patterns"
     },
     {
       "name": "pure_devtools",
-      "description": "Pure infrastructure/developer tools where buyers aren't on social",
-      "auto_score": 0
+      "description": "Pure infrastructure/dev tools - Buyer is exclusively developers finding tools through GitHub/HackerNews"
     },
     {
-      "name": "no_clear_offer",
-      "description": "No clear offer structure or positioning",
-      "auto_score": 0
+      "name": "pre_revenue_no_funding",
+      "description": "Pre-revenue with no funding - No customers AND no funding AND less than 6 months old"
+    },
+    {
+      "name": "enterprise_long_cycle",
+      "description": "Enterprise-only with 12+ month sales cycles - Government, healthcare systems, Fortune 100 procurement"
+    },
+    {
+      "name": "direct_competitor",
+      "description": "Direct competitor - Offers same service as Advergent (paid ads agency)"
     }
   ],
 
   "score_thresholds": {
-    "hot_lead": 80,
-    "warm_lead": 60,
+    "hot_lead": 75,
+    "hot_lead_alternate": {
+      "min_score": 65,
+      "core_metrics_min": 7
+    },
+    "warm_lead": 55,
     "review_needed": 40,
     "disqualified": 0
   },
 
+  "confidence_multiplier": {
+    "core_metrics": ["vertical_fit", "sales_model", "traction"],
+    "boost_10_percent": {
+      "condition": "3 core metrics >= 8"
+    },
+    "boost_5_percent": {
+      "condition": "2 core metrics >= 8 AND no metric <= 2"
+    }
+  },
+
   "minimum_thresholds": {
-    "sales_model": 5,
-    "vertical_fit": 5
+    "sales_model": 4,
+    "vertical_fit": 4
   }
 }

@@ -84,13 +84,14 @@ def write_results(
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Define columns
+    # Define columns - V2 scoring system
     base_columns = [
         "company_name",
         "domain",
         "linkedin_url",
         "total_score",
         "tier",
+        "confidence_level",
         "company_description",
         "recommendation",
         "disqualified",
@@ -98,22 +99,21 @@ def write_results(
         "scrape_success"
     ]
 
+    # V2: 5 metrics (removed pain_point_clarity)
     score_columns = [
-        "offer_price_score",
+        "vertical_fit_score",
         "sales_model_score",
-        "buyer_reachability_score",
-        "pain_point_clarity_score",
         "traction_score",
-        "vertical_fit_score"
+        "buyer_reachability_score",
+        "offer_price_score"
     ]
 
     reasoning_columns = [
-        "offer_price_reasoning",
+        "vertical_fit_reasoning",
         "sales_model_reasoning",
-        "buyer_reachability_reasoning",
-        "pain_point_clarity_reasoning",
         "traction_reasoning",
-        "vertical_fit_reasoning"
+        "buyer_reachability_reasoning",
+        "offer_price_reasoning"
     ] if include_reasoning else []
 
     columns = base_columns + score_columns + reasoning_columns
@@ -129,6 +129,7 @@ def write_results(
                 "linkedin_url": result.get("linkedin_url", ""),
                 "total_score": result.get("total_score", -1),
                 "tier": result.get("tier", "unknown"),
+                "confidence_level": result.get("confidence_level", ""),
                 "company_description": result.get("company_description", ""),
                 "recommendation": result.get("recommendation", ""),
                 "disqualified": result.get("disqualified", False),
@@ -136,14 +137,14 @@ def write_results(
                 "scrape_success": result.get("scrape_success", False)
             }
 
-            # Add score columns
+            # Add score columns - V2 metrics
             scores = result.get("scores", {})
-            for criterion in ["offer_price", "sales_model", "buyer_reachability",
-                            "pain_point_clarity", "traction", "vertical_fit"]:
+            for criterion in ["vertical_fit", "sales_model", "traction",
+                            "buyer_reachability", "offer_price"]:
                 score_data = scores.get(criterion, {})
-                row[f"{criterion}_score"] = score_data.get("score", "")
+                row[f"{criterion}_score"] = score_data.get("score", "") if isinstance(score_data, dict) else ""
                 if include_reasoning:
-                    row[f"{criterion}_reasoning"] = score_data.get("reasoning", "")
+                    row[f"{criterion}_reasoning"] = score_data.get("reasoning", "") if isinstance(score_data, dict) else ""
 
             writer.writerow(row)
 
