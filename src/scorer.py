@@ -130,6 +130,21 @@ def score_company(
         result["scrape_success"] = scraped_data.get("error") is None
         result["scrape_error"] = scraped_data.get("error")
 
+        # Check minimum thresholds - auto-disqualify if any score is below minimum
+        min_thresholds = criteria.get("minimum_thresholds", {})
+        scores = result.get("scores", {})
+
+        for criterion, min_score in min_thresholds.items():
+            criterion_data = scores.get(criterion, {})
+            actual_score = criterion_data.get("score", 0)
+
+            if actual_score < min_score:
+                result["disqualified"] = True
+                result["disqualifier_reason"] = f"{criterion} score ({actual_score}) below minimum ({min_score})"
+                result["total_score"] = 0
+                result["tier"] = "disqualified"
+                break
+
         return result
     except json.JSONDecodeError as e:
         return {
