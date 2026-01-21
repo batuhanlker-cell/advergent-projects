@@ -1,0 +1,111 @@
+{
+  "name": "High-Ticket B2B Lead Gen ICP",
+  "description": "B2B SaaS and high-ticket businesses needing qualified demo bookings through paid ads",
+
+  "target_verticals": [
+    "B2B SaaS companies",
+    "Agencies selling $10K+ engagements",
+    "Consultancies with high-ticket services",
+    "Coaches/programs with $5K+ offers",
+    "Service providers wanting paid acquisition channel"
+  ],
+
+  "scoring_criteria": {
+    "offer_price": {
+      "weight": 25,
+      "description": "Minimum $3K offer (ideally $5K+)",
+      "scoring_guide": {
+        "10": "$10K+ offers clearly visible",
+        "8": "$5K-10K offer range",
+        "5": "$3K-5K offer range",
+        "2": "Unclear pricing but likely high-ticket",
+        "0": "Low-ticket or self-serve pricing"
+      }
+    },
+    "sales_model": {
+      "weight": 20,
+      "description": "Sells via demos/calls, not self-serve",
+      "scoring_guide": {
+        "10": "Clear 'Book a demo' or 'Schedule a call' CTA",
+        "7": "Contact sales / Get a quote model",
+        "3": "Mixed model (some self-serve, some sales)",
+        "0": "Pure self-serve / buy now button"
+      }
+    },
+    "buyer_reachability": {
+      "weight": 20,
+      "description": "Decision-maker (founder, CEO, VP) reachable on Meta or LinkedIn",
+      "scoring_guide": {
+        "10": "Clearly targets business owners/executives, active on social",
+        "7": "SMB focus, buyers likely on LinkedIn/Meta",
+        "4": "Mid-market, mixed buyer personas",
+        "0": "Enterprise/technical buyers, dev communities only"
+      }
+    },
+    "pain_point_clarity": {
+      "weight": 15,
+      "description": "Clear, emotionally-charged pain point for ad creative",
+      "scoring_guide": {
+        "10": "Obvious pain point (revenue, time, leads, growth)",
+        "7": "Clear business problem, somewhat emotional",
+        "4": "Technical problem, less emotional appeal",
+        "0": "Vague value prop, no clear pain"
+      }
+    },
+    "traction": {
+      "weight": 10,
+      "description": "Has clients, revenue, proof points - not pre-revenue",
+      "scoring_guide": {
+        "10": "Clear traction signals (logos, testimonials, case studies)",
+        "7": "Some social proof visible",
+        "4": "Appears established but limited proof",
+        "0": "Looks pre-revenue or very early stage"
+      }
+    },
+    "vertical_fit": {
+      "weight": 10,
+      "description": "Fits target verticals",
+      "scoring_guide": {
+        "10": "Perfect fit - B2B SaaS or high-ticket service",
+        "7": "Good fit - adjacent vertical",
+        "3": "Partial fit - some relevance",
+        "0": "No fit - wrong vertical entirely"
+      }
+    }
+  },
+
+  "disqualifiers": [
+    {
+      "name": "enterprise_only",
+      "description": "Enterprise-only sales with 6+ month cycles, procurement, technical committees",
+      "auto_score": 0
+    },
+    {
+      "name": "b2c_low_ticket",
+      "description": "B2C or low-ticket subscriptions under $100/month",
+      "auto_score": 0
+    },
+    {
+      "name": "toxic_reputation",
+      "description": "Toxic reputation, dark patterns, or unethical business practices",
+      "auto_score": 0
+    },
+    {
+      "name": "pure_devtools",
+      "description": "Pure infrastructure/developer tools where buyers aren't on social",
+      "auto_score": 0
+    },
+    {
+      "name": "no_clear_offer",
+      "description": "No clear offer structure or positioning",
+      "auto_score": 0
+    }
+  ],
+
+  "score_thresholds": {
+    "hot_lead": 80,
+    "warm_lead": 60,
+    "review_needed": 40,
+    "disqualified": 0
+  }
+}
