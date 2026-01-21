@@ -16,6 +16,7 @@ Usage:
 import argparse
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from tqdm import tqdm
@@ -84,6 +85,12 @@ def main():
         default=None,
         help="Only output companies with score >= this value"
     )
+    parser.add_argument(
+        "--delay", "-d",
+        type=float,
+        default=1.0,
+        help="Delay in seconds between requests to avoid rate limiting (default: 1.0)"
+    )
 
     args = parser.parse_args()
 
@@ -136,10 +143,10 @@ def main():
 
     # Process each domain
     print(f"\nScoring companies using Ollama ({args.model})...")
-    print("(This runs locally - no API costs!)\n")
+    print(f"(Delay: {args.delay}s between requests)\n")
     results = []
 
-    for domain in tqdm(domains, desc="Scoring"):
+    for i, domain in enumerate(tqdm(domains, desc="Scoring")):
         try:
             result = score_company(domain, criteria, model=args.model)
             results.append(result)
@@ -155,6 +162,10 @@ def main():
                 "scores": {},
                 "recommendation": "Manual review needed"
             })
+
+        # Delay between requests (skip after last one)
+        if args.delay > 0 and i < len(domains) - 1:
+            time.sleep(args.delay)
 
     # Filter by minimum score if specified
     if args.min_score is not None:
