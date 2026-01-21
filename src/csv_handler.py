@@ -94,7 +94,8 @@ def write_results(
         "company_description",
         "recommendation",
         "disqualified",
-        "disqualifier_reason"
+        "disqualifier_reason",
+        "scrape_success"
     ]
 
     score_columns = [
@@ -131,7 +132,8 @@ def write_results(
                 "company_description": result.get("company_description", ""),
                 "recommendation": result.get("recommendation", ""),
                 "disqualified": result.get("disqualified", False),
-                "disqualifier_reason": result.get("disqualifier_reason", "")
+                "disqualifier_reason": result.get("disqualifier_reason", ""),
+                "scrape_success": result.get("scrape_success", False)
             }
 
             # Add score columns
